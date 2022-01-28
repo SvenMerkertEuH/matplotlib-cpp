@@ -1,5 +1,11 @@
 #pragma once
 
+#ifdef _DEBUG
+# ifndef BOOST_DEBUG_PYTHON
+#  undef _DEBUG // Don't let Python force the debug library just because we're debugging.
+#  define DEBUG_UNDEFINED_FROM_WRAP_PYTHON_H
+# endif
+#endif
 // Python headers must be included before any system headers, since
 // they define _POSIX_C_SOURCE
 #include <Python.h>
@@ -111,7 +117,6 @@ struct _interpreter {
        were constructed. [2] So for advanced usage, a `kill()` function is provided so that library
        users can manually ensure that the interpreter is constructed and destroyed within the
        same thread.
-
          1: http://bytes.com/topic/python/answers/793370-multiple-independent-python-interpreters-c-c-program
          2: https://github.com/lava/matplotlib-cpp/pull/202#issue-436220256
        */
@@ -350,10 +355,10 @@ template <> struct select_npy_type<uint64_t> { const static NPY_TYPES type = NPY
 
 // Sanity checks; comment them out or change the numpy type below if you're compiling on
 // a platform where they don't apply
-static_assert(sizeof(long long) == 8);
-template <> struct select_npy_type<long long> { const static NPY_TYPES type = NPY_INT64; };
-static_assert(sizeof(unsigned long long) == 8);
-template <> struct select_npy_type<unsigned long long> { const static NPY_TYPES type = NPY_UINT64; };
+//static_assert(sizeof(long long) == 8);
+//template <> struct select_npy_type<long long> { const static NPY_TYPES type = NPY_INT64; };
+//static_assert(sizeof(unsigned long long) == 8);
+//template <> struct select_npy_type<unsigned long long> { const static NPY_TYPES type = NPY_UINT64; };
 
 template<typename Numeric>
 PyObject* get_array(const std::vector<Numeric>& v)
